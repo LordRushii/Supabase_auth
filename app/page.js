@@ -57,7 +57,6 @@ export default async function Home() {
                 )}
                 <div className="p-4">
                   <h3 className="font-bold text-xl mb-2">{profile.name || 'Anonymous User'}</h3>
-                  {profile.email && <p className="text-gray-700">{profile.email}</p>}
                 </div>
               </div>
             ))}

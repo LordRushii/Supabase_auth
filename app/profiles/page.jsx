@@ -115,7 +115,7 @@ export default async function Profiles() {
                       <span className="ml-1 capitalize text-xs">{profile.provider || 'unknown'}</span>
                     </div>
                   </div>
-                  {profile.email && <p className="text-gray-700">{profile.email}</p>}
+                  {isCurrentUser && profile.email && <p className="text-gray-700">{profile.email}</p>}
                   <p className="text-xs text-gray-500 mt-2">
                     ID: {profile.id.substring(0, 8)}...
                   </p>
