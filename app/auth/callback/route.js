@@ -5,6 +5,9 @@ import { NextResponse } from 'next/server'
 export async function GET(request) {
   const requestUrl = new URL(request.url)
   const code = requestUrl.searchParams.get('code')
+  
+  // Get the host dynamically from the request URL
+  const baseUrl = `${requestUrl.protocol}//${requestUrl.host}`
 
   if (code) {
     const cookieStore = cookies()
@@ -33,7 +36,7 @@ export async function GET(request) {
       
       if (error) {
         console.error("Error exchanging code for session:", error.message)
-        return NextResponse.redirect(new URL('/auth?error=session_error', request.url))
+        return NextResponse.redirect(`${baseUrl}/auth?error=session_error`)
       }
       
       if (data?.user) {
@@ -87,10 +90,10 @@ export async function GET(request) {
       }
     } catch (err) {
       console.error("Unexpected error in auth callback:", err.message)
-      return NextResponse.redirect(new URL('/auth?error=unexpected', request.url))
+      return NextResponse.redirect(`${baseUrl}/auth?error=unexpected`)
     }
   }
 
   // URL to redirect to after sign in process completes
-  return NextResponse.redirect(new URL('/profile', request.url))
+  return NextResponse.redirect(`${baseUrl}/profile`)
 } 

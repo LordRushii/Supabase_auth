@@ -1,14 +1,25 @@
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { headers } from 'next/headers'
+
+// Function to get the base URL dynamically
+function getBaseUrl() {
+  const headersList = headers()
+  const host = headersList.get('host') || 'localhost:3000'
+  const protocol = headersList.get('x-forwarded-proto') || 'http'
+  return `${protocol}://${host}`
+}
 
 async function signInWithGithub() {
   'use server'
   const supabase = await createClient()
+  const baseUrl = getBaseUrl()
+  
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'github',
     options: {
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+      redirectTo: `${baseUrl}/auth/callback`,
       scopes: 'read:user user:email', // Request access to user profile and email
     },
   })
@@ -24,10 +35,12 @@ async function signInWithGithub() {
 async function signInWithGoogle() {
   'use server'
   const supabase = await createClient()
+  const baseUrl = getBaseUrl()
+  
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+      redirectTo: `${baseUrl}/auth/callback`,
       scopes: 'email profile',
     },
   })
