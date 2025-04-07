@@ -7,7 +7,14 @@ import { headers } from 'next/headers'
 function getBaseUrl() {
   const headersList = headers()
   const host = headersList.get('host') || 'localhost:3000'
-  const protocol = headersList.get('x-forwarded-proto') || 'http'
+  
+  // Explicitly handle Vercel production domain
+  if (host.includes('lithematic.vercel.app')) {
+    return 'https://lithematic.vercel.app'
+  }
+  
+  // For localhost or other environments
+  const protocol = host.includes('localhost') ? 'http' : 'https'
   return `${protocol}://${host}`
 }
 
@@ -15,11 +22,14 @@ async function signInWithGithub() {
   'use server'
   const supabase = await createClient()
   const baseUrl = getBaseUrl()
+  const redirectUrl = `${baseUrl}/auth/callback`
+  
+  console.log('GitHub OAuth Redirect URL:', redirectUrl)
   
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'github',
     options: {
-      redirectTo: `${baseUrl}/auth/callback`,
+      redirectTo: redirectUrl,
       scopes: 'read:user user:email', // Request access to user profile and email
     },
   })
@@ -36,11 +46,14 @@ async function signInWithGoogle() {
   'use server'
   const supabase = await createClient()
   const baseUrl = getBaseUrl()
+  const redirectUrl = `${baseUrl}/auth/callback`
+  
+  console.log('Google OAuth Redirect URL:', redirectUrl)
   
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: `${baseUrl}/auth/callback`,
+      redirectTo: redirectUrl,
       scopes: 'email profile',
     },
   })
