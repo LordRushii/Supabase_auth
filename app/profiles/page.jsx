@@ -15,17 +15,7 @@ export default async function Profiles() {
     .from("profiles_with_auth")
     .select()
 
-  // Debug information - visible only to current user
-  const debugInfo = {
-    hasSession: !!session,
-    userId: session?.user?.id,
-    userEmail: session?.user?.email,
-    userMetadata: session?.user?.user_metadata,
-    sessionError: sessionError?.message,
-    profilesError: profilesError?.message,
-    profilesCount: profiles?.length || 0,
-  }
-
+  
   // Get provider icon
   const getProviderIcon = (provider) => {
     switch(provider?.toLowerCase()) {
@@ -65,24 +55,9 @@ export default async function Profiles() {
         </Link>
       </div>
       
-      {/* Show debug info only for authenticated users */}
-      {session && (
-        <div className="mb-8 space-y-4">
-          <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-            <h2 className="text-lg font-semibold mb-2">Server-Side Debug</h2>
-            <pre className="text-xs overflow-auto">{JSON.stringify(debugInfo, null, 2)}</pre>
-          </div>
-          
-          <AuthDebug />
-        </div>
-      )}
       
-      {profilesError && (
-        <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg">
-          <p className="font-semibold">Error loading profiles:</p>
-          <p>{profilesError.message}</p>
-        </div>
-      )}
+      
+     
       
       {profiles && profiles.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
